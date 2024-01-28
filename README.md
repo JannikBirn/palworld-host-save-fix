@@ -5,6 +5,10 @@
 ### Credit to [xNul](https://github.com/xNul/palworld-host-save-fix) and his Palworld Host Save Fix that was used as a base for this repo.
 This repository was created to fix the issue ([#69](https://github.com/xNul/palworld-host-save-fix/issues/69)) of not being able to pick up pals after the execution of his tool. Because a decend amount of changes were made i decided to create a new repository instead of creating a PR. 
 
+**If you utilized the tool from xNul, the setup process will differ slightly.**
+Initially, you will require [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) instead of uesave-rs. This will be automatically downloaded if you clone this repository; otherwise, you need to download palworld-save-tools separately and place it inside the `lib/palworld-save-tools` folder.
+The command now requires one less argument; you no longer need to provide the `<uesave.exe>` path due to the previous step.
+
 ## Information
 
 Fixes the bug which forces a player to create a new character when they already have a save.
@@ -40,7 +44,7 @@ Example:
 ## How to migrate a co-op save to a Windows dedicated server
 
 Prerequisites:
-- Clone this repository using git to automaticly get the [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) as submodule. Otherwise u need to also download the [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) and place it inside the `lib/palworld-save-tools)` folder.
+- Clone this repository using git to automaticly get the [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) as submodule. Otherwise you need to also download the [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) and place it inside the `lib/palworld-save-tools` folder.
 - The dedicated server is installed, running, and you're able to join it.
 - If you have a Viewing Cage, follow the workaround [below](#viewing-cage-bug) for the \[Viewing Cage bug\] in co-op before moving the save.
 
