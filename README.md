@@ -42,7 +42,7 @@ Select the first player by the name and lvl, this character will be migrated. In
 
 ### Terminal
 
-You will require palworld-save-tools. This will be automatically downloaded if you clone this repository; otherwise, you can download the palworld-host-save-fix.zip from the latest [realese](https://github.com/JannikBirn/palworld-host-save-fix/releases).
+You will require palworld-save-tools. This will be automatically downloaded if you clone this repository.
 
 Dependencies:
 - Python 3
