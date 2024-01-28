@@ -75,14 +75,13 @@ of your save folder before continuing. Press enter if you would like to continue
     
     # Level data replacement 
     characterSaveParameterMap = level_json["properties"]["worldSaveData"]["value"]["CharacterSaveParameterMap"]["value"]
-    instance_ids_len = len(characterSaveParameterMap)
-    for i in range(instance_ids_len):
+    i = 0
+    while i < len(characterSaveParameterMap):
         saved_parameter = characterSaveParameterMap[i]
 
         #delete the newly created player
         if player_new_instance_id == saved_parameter["key"]["InstanceId"]["value"]:
             characterSaveParameterMap.pop(i)
-            i = i -1
             continue
 
         if player_instance_id == saved_parameter["key"]["InstanceId"]["value"]:
@@ -104,10 +103,11 @@ of your save folder before continuing. Press enter if you would like to continue
             for ii in range(len(old_pal_owner_player_values)):
                 if old_pal_owner_player_values[ii] == old_guid_formatted:
                     level_json["properties"]["worldSaveData"]["value"]["CharacterSaveParameterMap"]["value"][i]["value"]["RawData"]["value"]["object"]["SaveParameter"]["value"]["OldOwnerPlayerUIds"]["value"]["values"][ii] = new_guid_formatted
+        i = i + 1
 
     # Guild data replacement.
-    group_ids_len = len(level_json["properties"]["worldSaveData"]["value"]["GroupSaveDataMap"]["value"])
-    for i in range(group_ids_len):
+    i = 0
+    while i < len(level_json["properties"]["worldSaveData"]["value"]["GroupSaveDataMap"]["value"]):
         group_id = level_json["properties"]["worldSaveData"]["value"]["GroupSaveDataMap"]["value"][i]
         
         # This will break the pick up functionallity
@@ -130,7 +130,8 @@ of your save folder before continuing. Press enter if you would like to continue
                 
                 # fixing the old player group
                 elif old_guid_formatted == group_id["value"]["RawData"]["value"]["players"][iii]["player_uid"]:
-                    group_id["value"]["RawData"]["value"]["players"][iii]["player_uid"] = new_guid_formatted  
+                    group_id["value"]["RawData"]["value"]["players"][iii]["player_uid"] = new_guid_formatted 
+        i = i + 1
 
     print('Fixed player guid!')
     
