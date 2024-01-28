@@ -6,7 +6,7 @@
 This repository was created to fix the issue ([#69](https://github.com/xNul/palworld-host-save-fix/issues/69)) of not being able to pick up pals after the execution of his tool. Because a decend amount of changes were made i decided to create a new repository instead of creating a PR. 
 
 **If you utilized the tool from xNul, the setup process will differ slightly.**
-Initially, you will require [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) instead of uesave-rs. This will be automatically downloaded if you clone this repository; otherwise, you need to download palworld-save-tools separately and place it inside the `lib/palworld-save-tools` folder.
+Initially, you will require [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) instead of uesave-rs. This will be automatically downloaded if you clone this repository; otherwise, you can download the palworld-host-save-fix.zip from the [latest realese](https://github.com/JannikBirn/palworld-host-save-fix/releases).
 The command now requires one less argument; you no longer need to provide the `<uesave.exe>` path due to the previous step.
 
 ## Information
