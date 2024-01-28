@@ -4,7 +4,7 @@ import sys
 from inspect import getsourcefile
 from os.path import abspath
 import sys
-sys.path.append('palworld_save_tools')
+sys.path.append(os.path.join(os.path.dirname(abspath(getsourcefile(lambda:0))), "palworld_save_tools"))
 from palworld_save_tools.convert import convert_sav_to_json
 from palworld_save_tools.convert import convert_json_to_sav
 
