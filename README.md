@@ -44,7 +44,7 @@ Example:
 ## How to migrate a co-op save to a Windows dedicated server
 
 Prerequisites:
-- Clone this repository using git to automaticly get the [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) as submodule. Otherwise you need to also download the [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) and place it inside the `lib/palworld-save-tools` folder.
+- Clone this repository using git to automaticly get the [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) as submodule. Otherwise you can download the  palworld-host-save-fix.zip from the [latest realese](https://github.com/JannikBirn/palworld-host-save-fix/releases) this will also include all the submodules.
 - The dedicated server is installed, running, and you're able to join it.
 - If you have a Viewing Cage, follow the workaround [below](#viewing-cage-bug) for the \[Viewing Cage bug\] in co-op before moving the save.
 
