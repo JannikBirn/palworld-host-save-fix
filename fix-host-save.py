@@ -86,6 +86,7 @@ of your save folder before continuing. Press enter if you would like to continue
 
         if player_instance_id == saved_parameter["key"]["InstanceId"]["value"]:
             level_json["properties"]["worldSaveData"]["value"]["CharacterSaveParameterMap"]["value"][i]["key"]["PlayerUId"]["value"] = new_guid_formatted
+        
         # Fix player key guids
         # This will "delete" all catched pals
         # elif old_guid_formatted == saved_parameter["key"]["PlayerUId"]["value"]:
@@ -110,12 +111,16 @@ of your save folder before continuing. Press enter if you would like to continue
     while i < len(level_json["properties"]["worldSaveData"]["value"]["GroupSaveDataMap"]["value"]):
         group_id = level_json["properties"]["worldSaveData"]["value"]["GroupSaveDataMap"]["value"][i]
         
-        # This will break the pick up functionallity
-        # if "individual_character_handle_ids" in group_id["value"]["RawData"]["value"]:
-        #    group_handle_ids =  group_id["value"]["RawData"]["value"]["individual_character_handle_ids"]
-        #    for ii in range(len(group_handle_ids)):
-        #        if group_id["value"]["RawData"]["value"]["individual_character_handle_ids"][ii]["guid"] == old_guid_formatted:
-        #           group_id["value"]["RawData"]["value"]["individual_character_handle_ids"][ii]["guid"] = new_guid_formatted
+        # This is fixing the left click bug issue (https://github.com/JannikBirn/palworld-host-save-fix/issues/6)
+        if "individual_character_handle_ids" in group_id["value"]["RawData"]["value"]:
+           group_handle_ids =  group_id["value"]["RawData"]["value"]["individual_character_handle_ids"]
+           for ii in range(len(group_handle_ids)):
+               if group_id["value"]["RawData"]["value"]["individual_character_handle_ids"][ii]["instance_id"] == player_instance_id:
+                  group_id["value"]["RawData"]["value"]["individual_character_handle_ids"][ii]["guid"] = new_guid_formatted
+
+            # This will break the pick up functionallity
+            #    if group_id["value"]["RawData"]["value"]["individual_character_handle_ids"][ii]["guid"] == old_guid_formatted:
+            #       group_id["value"]["RawData"]["value"]["individual_character_handle_ids"][ii]["guid"] = new_guid_formatted
 
         if "admin_player_uid" in group_id["value"]["RawData"]["value"] and old_guid_formatted == group_id["value"]["RawData"]["value"]["admin_player_uid"]:
             group_id["value"]["RawData"]["value"]["admin_player_uid"] = new_guid_formatted
