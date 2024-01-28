@@ -86,6 +86,14 @@ If someone wants to make sure this kind of migration works and then create the i
 
 ## Known bugs
 
+### ~~\[Left Click bug\]~~
+
+**Has been fixed in the newest version of the script. If you aldready run the script and can't go to a previous version of the save file you need to fix it manually right now, here is a description of the process: [Issue #6](https://github.com/JannikBirn/palworld-host-save-fix/issues/6#issuecomment-1913631932)**
+
+~~Details: After applying the fix, some players experience a bug where you can't hold your left mouse button to attack. It seems like this only happens if you didn't do the [\[Guild bug\] workaround](#guild-bug) but I'm not sure.~~
+
+~~Workaround: If you leave the guild and rejoin, it goes away. Thanks [/u/skalibran](https://www.reddit.com/r/Palworld/comments/19axeqs/autoswing_not_working/kiq85zr/)!~~
+
 ### ~~\[Guild bug\]~~
 
 **\*\* Has likely been fixed by https://github.com/xNul/palworld-host-save-fix/pull/18. \*\***
@@ -105,12 +113,6 @@ Workaround: On the new server, after the save has been fixed, have each player's
 Details: The Viewing Cage [isn't officially supported](https://tech.palworldgame.com/dedicated-server-guide#qa) on dedicated servers so if you have built one in co-op, it needs to be removed from your co-op save before migrating it to your dedicated server.
 
 Workaround: \[Co-op Only\] If you have built a Viewing Cage, it needs to be removed from your co-op save before migrating it to your dedicated server.
-
-### \[Left Click bug\]
-
-Details: After applying the fix, some players experience a bug where you can't hold your left mouse button to attack. It seems like this only happens if you didn't do the [\[Guild bug\] workaround](#guild-bug) but I'm not sure.
-
-Workaround: If you leave the guild and rejoin, it goes away. Thanks [/u/skalibran](https://www.reddit.com/r/Palworld/comments/19axeqs/autoswing_not_working/kiq85zr/)!
 
 ### Credit to [xNul](https://github.com/xNul/palworld-host-save-fix) for his very useful script helping me to make this fix!
 
