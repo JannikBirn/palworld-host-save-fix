@@ -1,3 +1,3 @@
-[submodule "lib/palworld-save-tools"]
-	path = lib/palworld-save-tools
+[submodule "palworld_save_tools"]
+	path = palworld_save_tools
 	url = https://github.com/cheahjs/palworld-save-tools

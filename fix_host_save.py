@@ -1,9 +1,12 @@
 import json
 import os
-import subprocess
 import sys
 from inspect import getsourcefile
 from os.path import abspath
+import sys
+sys.path.append('palworld_save_tools')
+from palworld_save_tools.convert import convert_sav_to_json
+from palworld_save_tools.convert import convert_json_to_sav
 
 def main():
     if len(sys.argv) < 4:
@@ -16,55 +19,54 @@ potentially corrupt your data. It is HIGHLY recommended that you make a backup \
 of your save folder before continuing. Press enter if you would like to continue.')
     input('> ')
     
-    palworld_save_tool_path = os.path.join(os.path.dirname(abspath(getsourcefile(lambda:0))), "lib", "palworld-save-tools", "convert.py")
     save_path = sys.argv[1]
     new_guid = sys.argv[2]
     old_guid = sys.argv[3]
-    
-    # Apply expected formatting for the GUID.
-    old_guid_formatted = '{}-{}-{}-{}-{}'.format(old_guid[:8], old_guid[8:12], old_guid[12:16], old_guid[16:20], old_guid[20:]).lower()
-    new_guid_formatted = '{}-{}-{}-{}-{}'.format(new_guid[:8], new_guid[8:12], new_guid[12:16], new_guid[16:20], new_guid[20:]).lower()
     
     level_sav_path = save_path + '/Level.sav'
     player_sav_path = save_path + '/Players/'+ old_guid + '.sav'
     new_sav_path = save_path + '/Players/' + new_guid + '.sav'
     level_json_path = level_sav_path + '.json'
-    player_json_path = player_sav_path + '.json'
-    player_new_json_path = new_sav_path + '.json'
 
-    # uesave_path must point directly to the executable, not just the path it is located in.
-    if not os.path.exists(palworld_save_tool_path) or not os.path.isfile(palworld_save_tool_path):
-        print('ERROR: The given <palworld_save_tool_path> of "' + palworld_save_tool_path + '" is invalid. It must point directly to the python script. Try initing git submodules.')
-        exit(1)
+    sav_to_json(level_sav_path, level_json_path)
+    with open(level_json_path) as f:
+        level_json = json.load(f)
     
+    apply_fix(level_json_path, level_json, new_sav_path, player_sav_path)
+    os.remove(level_json_path)
+    
+def apply_fix(level_json_path, level_json, new_sav_path, player_sav_path):
+
     # save_path must exist in order to use it.
-    if not os.path.exists(save_path):
-        print('ERROR: Your given <save_path> of "' + save_path + '" does not exist. Did you enter the correct path to your save folder?')
+    if not os.path.exists(player_sav_path):
+        print('ERROR: Your given <save_path> of "' + player_sav_path + '" does not exist. Did you enter the correct path to your save folder?')
         exit(1)
     
     # The player needs to have created a character on the dedicated server and that save is used for this script.
     if not os.path.exists(new_sav_path):
         print('ERROR: Your player save does not exist. Did you enter the correct new GUID of your player? It should look like "8E910AC2000000000000000000000000".\nDid your player create their character with the provided save? Once they create their character, a file called "' + new_sav_path + '" should appear. Look back over the steps in the README on how to get your new GUID.')
         exit(1)
-    
+
     # Convert save files to JSON so it is possible to edit them.
     print('Converting save files to JSON ...')   
-    sav_to_json(palworld_save_tool_path, level_sav_path, level_json_path)
-    sav_to_json(palworld_save_tool_path, player_sav_path, player_json_path)
-    sav_to_json(palworld_save_tool_path, new_sav_path, player_new_json_path)
+    player_json_path = player_sav_path + '.json'
+    player_new_json_path = new_sav_path + '.json'    
+    sav_to_json(player_sav_path, player_json_path)
+    sav_to_json(new_sav_path, player_new_json_path)
     print('Converted save files to JSON')
     
     # Parse our JSON files.
     print('Parsing JSON files ...')   
     with open(player_json_path) as f:
         player_json = json.load(f)
-    with open(level_json_path) as f:
-        level_json = json.load(f)
+    
     with open(player_new_json_path) as f:
         player_new_json = json.load(f)
     print('JSON files have been parsed')   
     
     ### Replace all instances of the old GUID with the new GUID.
+    new_guid_formatted = player_new_json["properties"]["SaveData"]["value"]["PlayerUId"]["value"]
+    old_guid_formatted = player_json["properties"]["SaveData"]["value"]["PlayerUId"]["value"]
     print(f'Replacing the player guid {old_guid_formatted} with {new_guid_formatted} ... (this might take a while)')
 
     # Player data replacement.
@@ -150,12 +152,11 @@ of your save folder before continuing. Press enter if you would like to continue
     
     # Convert our JSON files to save files.
     print('Converting JSON files to save files ...')
-    json_to_sav(palworld_save_tool_path, level_json_path)
-    json_to_sav(palworld_save_tool_path, player_json_path)
+    json_to_sav(level_json_path)
+    json_to_sav(player_json_path)
     print('Converted JSON files back to save files')
     
-    # Clean up miscellaneous GVAS and JSON files which are no longer needed.
-    os.remove(level_json_path)
+    # Clean up miscellaneous GVAS and JSON files which are no longer needed.    
     os.remove(player_json_path)
     os.remove(player_new_json_path)
     print('Miscellaneous files removed')
@@ -166,48 +167,18 @@ of your save folder before continuing. Press enter if you would like to continue
     os.rename(player_sav_path, new_sav_path)
     print('Fix has been applied! Have fun!')
 
-def sav_to_json(palworld_save_tool_path, file, output_path):
+def sav_to_json(file, output_path):
     # Convert to json with palworld-save-tools
     # Run palworld-save-tools.py with the uncompressed file piped as stdin
-    process = subprocess.run(palworld_save_tool_to_json_params(palworld_save_tool_path, file, output_path))
-    # Check if the command was successful
-    if process.returncode != 0:
-        print(f'palworld-save-tools.py failed to convert {file} (return {process.returncode})')
-        print(process.stdout.decode('utf-8'))
-        print(process.stderr.decode('utf-8'))
-        return
-    print(f'File {file} converted to JSON successfully')
+    convert_sav_to_json(file, output_path, True)
 
-def json_to_sav(palworld_save_tool_path, file):
+def json_to_sav(file):
     # Convert the file back to binary
-    sav_file = file.replace('.sav.json', '.sav')
-    os.remove(sav_file)
-    process = subprocess.run(palworld_save_tool_from_json_params(palworld_save_tool_path, file, sav_file))
-    if process.returncode != 0:
-        print(f'palworld-save-tools.py failed to convert {file} (return {process.returncode})')
-        print(process.stdout.decode('utf-8'))
-        print(process.stderr.decode('utf-8'))
-        return  
-
-def palworld_save_tool_to_json_params(palworld_save_tool_path, input_file, out_path):
-    args = [
-        'python',
-        palworld_save_tool_path,
-        input_file,
-        '--to-json',
-        '--output', out_path,
-    ]
-    return args
-
-def palworld_save_tool_from_json_params(palworld_save_tool_path, input_file, output_file):
-    args = [
-        'python',
-        palworld_save_tool_path,
-        input_file,
-        '--from-json',
-        '--output', output_file,
-    ]
-    return args
+    print(file)
+    sav_file_path = file.replace('.sav.json', '.sav')
+    print(file)
+    os.remove(sav_file_path)
+    convert_json_to_sav(file, sav_file_path)
 
 if __name__ == "__main__":
     main()

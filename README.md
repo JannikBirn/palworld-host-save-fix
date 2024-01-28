@@ -2,13 +2,6 @@
 
 > ### :warning: This tool is experimental. Be careful of data loss and *always* make a backup.
 
-### Credit to [xNul](https://github.com/xNul/palworld-host-save-fix) and his Palworld Host Save Fix that was used as a base for this repo.
-This repository was created to fix the issue ([#69](https://github.com/xNul/palworld-host-save-fix/issues/69)) of not being able to pick up pals after the execution of his tool. Because a decend amount of changes were made i decided to create a new repository instead of creating a PR. 
-
-**If you utilized the tool from xNul, the setup process will differ slightly.**
-Initially, you will require [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) instead of uesave-rs. This will be automatically downloaded if you clone this repository; otherwise, you can download the palworld-host-save-fix.zip from the [latest realese](https://github.com/JannikBirn/palworld-host-save-fix/releases).
-The command now requires one less argument; you no longer need to provide the `<uesave.exe>` path due to the previous step.
-
 ## Information
 
 Fixes the bug which forces a player to create a new character when they already have a save.
@@ -28,6 +21,29 @@ To fix this bug, we've made a script that takes the GUID of the player on the ne
 
 ## Usage
 
+Steps:
+1. **Copy** (This is an experimental script and has known bugs so always keep a backup copy of your save.) your desired save's folder from `C:\Users\<username>\AppData\Local\Pal\Saved\SaveGames\<random_numbers>` to your dedicated server.
+2. In the `PalServer\Pal\Saved\Config\WindowsServer\GameUserSettings.ini` file, change the `DedicatedServerName` to match your save's folder name. For example, if your save's folder name is `2E85FD38BAA792EB1D4C09386F3A3CDA`, the `DedicatedServerName` changes to `DedicatedServerName=2E85FD38BAA792EB1D4C09386F3A3CDA`.
+3. Delete `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\WorldOption.sav` to allow modification of `PalWorldSettings.ini`. Players will have to choose their respawn point again, but nothing else is affected as far as I can tell.
+4. Confirm you can connect to your save on the dedicated server and that the world is the one in the save.
+5. Afterwards, create a new character on the dedicated server. A new `.sav` file should appear in `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\Players`.
+6. The name of that new `.sav` file is the co-op host's new GUID.  Shut the server down and follow the next instructions using the GUI (easy) or the Terminal (hard) approch. Remember this GUID for the Terminal approach.
+
+### GUI
+Download and run the .exe found in the [latest realese](https://github.com/JannikBirn/palworld-host-save-fix/releases). Start the .exe and follow the next instructions. **(If the GUI is sometimes not responding, just wait it out, it is duing some expansive IO operations and will finsih)**
+
+Select the Level.sav file **of your Server**.
+
+![Select the Level.sav file](./res/gui_select_file.png)
+
+Select the first player by the name and lvl, this character will be migrated. In the second Dropdown select the newly created player (it will probably be lvl.0 if you havn't done anything). After that click on "Migrate" (This might take a while, don't close the window if it is not responding, the program is working in the background).
+
+![Select both player files](./res/guid_select_player.png)
+
+### Terminal
+
+You will require palworld-save-tools. This will be automatically downloaded if you clone this repository; otherwise, you can download the palworld-host-save-fix.zip from the latest [realese](https://github.com/JannikBirn/palworld-host-save-fix/releases).
+
 Dependencies:
 - Python 3
 - [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools)
@@ -41,48 +57,15 @@ Command:
 Example:    
 `python fix-host-save.py "C:\Users\XXX\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001`
 
-## How to migrate a co-op save to a Windows dedicated server
-
-Prerequisites:
-- Clone this repository using git to automaticly get the [palworld-save-tools](https://github.com/cheahjs/palworld-save-tools) as submodule. Otherwise you can download the  palworld-host-save-fix.zip from the [latest realese](https://github.com/JannikBirn/palworld-host-save-fix/releases) this will also include all the submodules.
-- The dedicated server is installed, running, and you're able to join it.
-- If you have a Viewing Cage, follow the workaround [below](#viewing-cage-bug) for the \[Viewing Cage bug\] in co-op before moving the save.
-
-Steps:
-1. Copy your desired save's folder from `C:\Users\<username>\AppData\Local\Pal\Saved\SaveGames\<random_numbers>` to your dedicated server.
-2. In the `PalServer\Pal\Saved\Config\WindowsServer\GameUserSettings.ini` file, change the `DedicatedServerName` to match your save's folder name. For example, if your save's folder name is `2E85FD38BAA792EB1D4C09386F3A3CDA`, the `DedicatedServerName` changes to `DedicatedServerName=2E85FD38BAA792EB1D4C09386F3A3CDA`.
-3. Delete `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\WorldOption.sav` to allow modification of `PalWorldSettings.ini`. Players will have to choose their respawn point again, but nothing else is affected as far as I can tell.
-4. Confirm you can connect to your save on the dedicated server and that the world is the one in the save. You can check the world with a character that belongs to a regular player from the co-op.
-5. Afterwards, the co-op host must create a new character on the dedicated server. A new `.sav` file should appear in `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\Players`.
-6. The name of that new `.sav` file is the co-op host's new GUID. We will need the co-op host's new GUID for the script to work.
-7. Shut the server down and then copy the entire dedicated server save at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save with the co-op host's new character!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
-8. **Make a backup of your save!** This is an experimental script and has known bugs so always keep a backup copy of your save.
-9. Run the script using the command in the [Usage section](#usage) with the information you've gathered and using `00000000000000000000000000000001` as the co-op host's old GUID.
+7. Copy the entire dedicated server save at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save with the co-op host's new character!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
+9. Run the script using the command in the [Terminal](#Terminal) with the information you've gathered and using `00000000000000000000000000000001` as the co-op host's old GUID.
 10. Copy the save from the temporary folder back to the dedicated server. Move the save you had in the dedicated server somewhere else or rename it to something different.
 11. Start the server back up and have the co-op host join the server with their fixed character.
 12. If, after 5 minutes of play, your Pals won't attack for you or do work in the base, follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
 
 
-Prerequisites:
-- Install the dependencies [above](#usage).
-- The new dedicated server is installed, running, and you're able to join it.
-
-Steps:
-1. Copy the save from your old dedicated server to your new dedicated server.
-2. In the `PalServer\Pal\Saved\Config\WindowsorLinuxServer\GameUserSettings.ini` file of the new server, change the `DedicatedServerName` to match your save's folder name. For example, if your save's folder name is `2E85FD38BAA792EB1D4C09386F3A3CDA`, the `DedicatedServerName` changes to `DedicatedServerName=2E85FD38BAA792EB1D4C09386F3A3CDA`.
-3. Start the new server and have every player create a new character. When a player creates a new character, a new `.sav` file will appear in `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\Players`. The name of that new `.sav` file is the player's new GUID. Make sure to keep track of all old GUIDs, new GUIDs, and which player they belong to.
-4. Shut the server down and then copy the entire new server save at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save with all the new characters!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
-5. **Make a backup of your save!** This is an experimental script and has known bugs so always keep a backup copy of your save.
-6. For each player's corresponding new GUID and old GUID pair, run the script using the command in the [Usage section](#usage).
-7. Copy the save from the temporary folder back to the dedicated server. Move the save you had in the dedicated server somewhere else or rename it to something different.
-8. Start the server back up and have each player join the server with their fixed character.
-9. If, after 5 minutes of play, a player's Pals won't attack for them or do work in their base, have them follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
-
-## How to migrate a Windows dedicated server save to co-op
-
-[Apparently this is possible](https://github.com/xNul/palworld-host-save-fix/issues/12#issuecomment-1904052304) but I haven't tried it yet. Instructions should be very similar to "How to migrate a co-op save to a Windows dedicated server" but where you use the `00000000000000000000000000000001` GUID as the new GUID and the player's current GUID on the dedicated server as the old GUID.
-
-If someone wants to make sure this kind of migration works and then create the instructions to do it, I'd accept a PR for them.
+### Multible Players have different Characters
+If multible players received a new character you can repeat this process multible times and migrate them one by one.
 
 ## Known bugs
 
@@ -114,6 +97,7 @@ Details: The Viewing Cage [isn't officially supported](https://tech.palworldgame
 
 Workaround: \[Co-op Only\] If you have built a Viewing Cage, it needs to be removed from your co-op save before migrating it to your dedicated server.
 
-### Credit to [xNul](https://github.com/xNul/palworld-host-save-fix) for his very useful script helping me to make this fix!
+### Credit to [xNul](https://github.com/xNul/palworld-host-save-fix) and his Palworld Host Save Fix that was used as a base for this repo.
+This repository was created to fix the issue ([#69](https://github.com/xNul/palworld-host-save-fix/issues/69)) of not being able to pick up pals after the execution of his tool. Because a decend amount of changes were made i decided to create a new repository instead of creating a PR. 
 
 ### Appreciate any help testing and resolving bugs.
