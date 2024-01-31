@@ -107,8 +107,8 @@ def main():
                 popup_return = sg.popup_ok_cancel(f"Are you sure you wan't to migrate {players[old_player_selection_index]} -> {players[new_player_selection_index]} (This player will lose its progress: {players[new_player_selection_index]}). Please make a backup before running! Make sure the server is not running!")
                 if popup_return == "OK":
                     player_folder_path = os.path.join(os.path.dirname(selected_file), "Players")
-                    new_player_guid = players_json[new_player_selection_index]["key"]["PlayerUId"]["value"].replace("-","")
-                    old_player_guid = players_json[old_player_selection_index]["key"]["PlayerUId"]["value"].replace("-","")
+                    new_player_guid = players_json[new_player_selection_index]["key"]["PlayerUId"]["value"].replace("-","").upper()
+                    old_player_guid = players_json[old_player_selection_index]["key"]["PlayerUId"]["value"].replace("-","").upper()
                     window['progressbarText'].update("Migrating, this can take up to 10 Minutes (don't worry if this window freezes, let it run)...")
                     window['progressbar'].update_bar(50)
                     window.refresh()
