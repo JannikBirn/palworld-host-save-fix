@@ -33,7 +33,8 @@ of your save folder before continuing. Press enter if you would like to continue
         level_json = json.load(f)
     
     apply_fix(level_json_path, level_json, new_sav_path, player_sav_path)
-    os.remove(level_json_path)
+    if os.path.exists(level_json_path):
+        os.remove(level_json_path)
     
 def apply_fix(level_json_path, level_json, new_sav_path, player_sav_path):
 
@@ -156,9 +157,12 @@ def apply_fix(level_json_path, level_json, new_sav_path, player_sav_path):
     json_to_sav(player_json_path)
     print('Converted JSON files back to save files')
     
-    # Clean up miscellaneous GVAS and JSON files which are no longer needed.    
-    os.remove(player_json_path)
-    os.remove(player_new_json_path)
+    # Clean up miscellaneous GVAS and JSON files which are no longer needed.
+    if os.path.exists(player_json_path):
+        os.remove(player_json_path)
+
+    if os.path.exists(player_new_json_path):
+        os.remove(player_new_json_path)
     print('Miscellaneous files removed')
     
     # We must rename the patched save file from the old GUID to the new GUID for the server to recognize it.
@@ -176,8 +180,8 @@ def json_to_sav(file):
     # Convert the file back to binary
     print(file)
     sav_file_path = file.replace('.sav.json', '.sav')
-    print(file)
-    os.remove(sav_file_path)
+    if os.path.exists(sav_file_path):
+        os.remove(sav_file_path)
     convert_json_to_sav(file, sav_file_path)
 
 if __name__ == "__main__":
