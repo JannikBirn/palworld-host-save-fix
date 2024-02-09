@@ -32,21 +32,35 @@ of your save folder before continuing. Press enter if you would like to continue
     with open(level_json_path) as f:
         level_json = json.load(f)
     
-    apply_fix(level_json_path, level_json, new_sav_path, player_sav_path)
-    if os.path.exists(level_json_path):
-        os.remove(level_json_path)
-    
+    try:        
+        apply_fix(level_json_path, level_json, new_sav_path, player_sav_path)
+    except Exception as e:
+        if os.path.exists(level_json_path):
+            os.remove(level_json_path)
+            raise
+
 def apply_fix(level_json_path, level_json, new_sav_path, player_sav_path):
+    try:
+        do_apply_fix(level_json_path, level_json, new_sav_path, player_sav_path)
+    except Exception as e:
+        player_json_path = player_sav_path + '.json'
+        player_new_json_path = new_sav_path + '.json'    
+        print(f'Exception has accured: {e}. \n Please created an issue on Github with this exception and load a backup save file.')
+        if os.path.exists(player_json_path):
+            os.remove(player_json_path)
+        if os.path.exists(player_new_json_path):
+            os.remove(player_new_json_path)
+        raise
+    
+def do_apply_fix(level_json_path, level_json, new_sav_path, player_sav_path):
 
     # save_path must exist in order to use it.
     if not os.path.exists(player_sav_path):
-        print('ERROR: Your given <save_path> of "' + player_sav_path + '" does not exist. Did you enter the correct path to your save folder?')
-        exit(1)
+        raise RuntimeError('ERROR: Your given <save_path> of "' + player_sav_path + '" does not exist. Did you enter the correct path to your save folder?')
     
     # The player needs to have created a character on the dedicated server and that save is used for this script.
     if not os.path.exists(new_sav_path):
-        print('ERROR: Your player save does not exist. Did you enter the correct new GUID of your player? It should look like "8E910AC2000000000000000000000000".\nDid your player create their character with the provided save? Once they create their character, a file called "' + new_sav_path + '" should appear. Look back over the steps in the README on how to get your new GUID.')
-        exit(1)
+        raise RuntimeError('ERROR: Your player save does not exist. Did you enter the correct new GUID of your player? It should look like "8E910AC2000000000000000000000000".\nDid your player create their character with the provided save? Once they create their character, a file called "' + new_sav_path + '" should appear. Look back over the steps in the README on how to get your new GUID.')
 
     # Convert save files to JSON so it is possible to edit them.
     print('Converting save files to JSON ...')   
@@ -174,6 +188,8 @@ def apply_fix(level_json_path, level_json, new_sav_path, player_sav_path):
 def sav_to_json(file, output_path):
     # Convert to json with palworld-save-tools
     # Run palworld-save-tools.py with the uncompressed file piped as stdin
+    if os.path.exists(output_path):
+        os.remove(output_path)
     convert_sav_to_json(file, output_path, True)
 
 def json_to_sav(file):
