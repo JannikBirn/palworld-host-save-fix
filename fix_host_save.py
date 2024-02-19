@@ -5,8 +5,8 @@ from inspect import getsourcefile
 from os.path import abspath
 import sys
 sys.path.append(os.path.join(os.path.dirname(abspath(getsourcefile(lambda:0))), "palworld_save_tools"))
-from palworld_save_tools.convert import convert_sav_to_json
-from palworld_save_tools.convert import convert_json_to_sav
+from palworld_save_tools.commands.convert import convert_sav_to_json
+from palworld_save_tools.commands.convert import convert_json_to_sav
 
 def main():
     if len(sys.argv) < 4:
