@@ -1,5 +1,7 @@
 # Palworld Host Save Fix
 
+> ### :bangbang: This tool was developed for an earlier version of Palworld and might not work on the current version, *always* make a backup before using this tool.
+
 > ### :warning: This tool is experimental. Be careful of data loss and *always* make a backup.
 
 ## Information
